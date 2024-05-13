@@ -9,14 +9,7 @@
 #include <complex>
 #include <numeric>
 
-typedef double DOUBLE;
-
-using ARRAY_I = std::vector<int>;
-using ARRAY_D = std::vector<double>;
-
-using COMPLEX = std::complex<double>;
-
-using ARRAY_COMPLEX = std::vector<COMPLEX>;
+#include "data_types.h"
 
 namespace DSP
 {
