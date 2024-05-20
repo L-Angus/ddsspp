@@ -22,23 +22,37 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "../../simd/impl/function.hpp"
+#include "../../simd/select.hpp"
+#include "../atan.hpp"
+#include "../sqrt.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+inline namespace CMT_ARCH_NAME
+{
+
+namespace intrinsics
+{
+
+template <typename T, size_t N, typename Tout = flt_type<T>>
+KFR_INTRINSIC vec<Tout, N> asin(const vec<T, N>& x)
+{
+    const vec<Tout, N> xx = x;
+    return atan2(xx, sqrt(Tout(1) - xx * xx));
+}
+
+template <typename T, size_t N, typename Tout = flt_type<T>>
+KFR_INTRINSIC vec<Tout, N> acos(const vec<T, N>& x)
+{
+    const vec<Tout, N> xx = x;
+    return atan2(sqrt(Tout(1) - xx * xx), xx);
+}
+KFR_HANDLE_SCALAR(asin)
+KFR_HANDLE_SCALAR(acos)
+} // namespace intrinsics
+KFR_I_FN(asin)
+KFR_I_FN(acos)
+} // namespace CMT_ARCH_NAME
+
+} // namespace kfr

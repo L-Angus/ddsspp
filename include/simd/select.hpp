@@ -1,3 +1,6 @@
+/** @addtogroup basic_math
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,25 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "impl/select.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+inline namespace CMT_ARCH_NAME
+{
+
+/**
+ * @brief Returns x if m is true, otherwise return y. Order of the arguments is same as in ternary operator.
+ * @code
+ * return m ? x : y
+ * @endcode
+ */
+template <typename T1, size_t N, typename T2, typename T3, KFR_ENABLE_IF(is_numeric_args<T1, T2, T3>),
+          typename Tout = subtype<std::common_type_t<T2, T3>>>
+KFR_INTRINSIC vec<Tout, N> select(const mask<T1, N>& m, const T2& x, const T3& y)
+{
+    return intrinsics::select(bitcast<Tout>(cast<itype<Tout>>(bitcast<itype<T1>>(m.asvec()))).asmask(),
+                              broadcastto<Tout>(x), broadcastto<Tout>(y));
+}
+} // namespace CMT_ARCH_NAME
+} // namespace kfr

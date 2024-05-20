@@ -22,23 +22,34 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "../min_max.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+inline namespace CMT_ARCH_NAME
+{
+
+namespace intrinsics
+{
+
+template <typename T>
+KFR_INTRINSIC T clamp(const T& x, const T& lo, const T& hi)
+{
+    return max(min(x, hi), lo);
+}
+
+template <typename T, size_t N>
+KFR_INTRINSIC vec<T, N> clamp(const vec<T, N>& x, const vec<T, N>& lo, const vec<T, N>& hi)
+{
+    return max(min(x, hi), lo);
+}
+
+template <typename T, size_t N>
+KFR_INTRINSIC vec<T, N> clamp(const vec<T, N>& x, const vec<T, N>& hi)
+{
+    return max(min(x, hi), zerovector<T, N>());
+}
+} // namespace intrinsics
+KFR_I_FN(clamp)
+} // namespace CMT_ARCH_NAME
+} // namespace kfr

@@ -1,3 +1,6 @@
+/** @addtogroup logical
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,38 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "vec.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+
+inline namespace CMT_ARCH_NAME
+{
+
+template <typename T>
+using maskfor = typename T::mask_t;
+
+namespace internal
+{
+
+template <typename T, size_t Nout, size_t N1, size_t... indices>
+constexpr vec<T, Nout> partial_mask_helper(csizes_t<indices...>)
+{
+    return make_vector(maskbits<T>(indices < N1)...);
+}
+
+template <typename T, size_t Nout, size_t N1>
+constexpr vec<T, Nout> partial_mask()
+{
+    return internal::partial_mask_helper<T, Nout, N1>(csizeseq_t<Nout>());
+}
+} // namespace internal
+
+template <typename T, typename... Args, size_t Nout = (sizeof...(Args) + 1)>
+constexpr KFR_INTRINSIC vec<bit<T>, Nout> make_mask(bool arg, Args... args)
+{
+    return vec<bit<T>, Nout>(arg, static_cast<bool>(args)...);
+}
+
+} // namespace CMT_ARCH_NAME
+} // namespace kfr

@@ -1,3 +1,6 @@
+/** @addtogroup complex
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,40 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "../cometa/string.hpp"
+#include "constants.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+#include <complex>
+
+namespace kfr
+{
+#ifndef KFR_CUSTOM_COMPLEX
+template <typename T>
+using complex = std::complex<T>;
+#endif
+
+} // namespace kfr
+
+namespace cometa
+{
+template <typename T>
+struct representation<kfr::complex<T>>
+{
+    using type = std::string;
+    static std::string get(const kfr::complex<T>& value)
+    {
+        return as_string(value.real()) + " + " + as_string(value.imag()) + "j";
+    }
+};
+
+template <char t, int width, int prec, typename T>
+struct representation<fmt_t<kfr::complex<T>, t, width, prec>>
+{
+    using type = std::string;
+    static std::string get(const fmt_t<kfr::complex<T>, t, width, prec>& value)
+    {
+        return as_string(cometa::fmt<t, width, prec>(value.value.real())) + " + " +
+               as_string(cometa::fmt<t, width, prec>(value.value.imag())) + "j";
+    }
+};
+} // namespace cometa

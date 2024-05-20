@@ -1,3 +1,6 @@
+/** @addtogroup basic_math
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,20 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "impl/sqrt.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+inline namespace CMT_ARCH_NAME
+{
+
+/**
+ * @brief Returns the positive square root of the x. \f$\sqrt{x}\f$
+ */
+template <typename T1, KFR_ENABLE_IF(is_numeric<T1>)>
+KFR_INTRINSIC flt_type<T1> sqrt(const T1& x)
+{
+    return intrinsics::sqrt(x);
+}
+} // namespace CMT_ARCH_NAME
+} // namespace kfr

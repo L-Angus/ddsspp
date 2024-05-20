@@ -1,3 +1,6 @@
+/** @addtogroup shuffle
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,23 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "../simd/operators.hpp"
+#include "../simd/read_write.hpp"
+#include "expression.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+
+template <typename T>
+void convert_endianess(T* data, size_t size)
+{
+    block_process(size, csizes<2 * vector_width<T>, 1>,
+                  [&](size_t i, auto w)
+                  {
+                      constexpr size_t width = CMT_CVAL(w);
+                      vec<T, width> value    = read<width>(data + i);
+                      value                  = swapbyteorder(value);
+                      write(data + i, value);
+                  });
+}
+} // namespace kfr

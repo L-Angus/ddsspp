@@ -1,3 +1,6 @@
+/** @addtogroup trigonometric
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,29 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "impl/asin_acos.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+inline namespace CMT_ARCH_NAME
+{
+
+/**
+ * @brief Returns the arc sine of x. The returned angle is in the range \f$-\pi/2\f$ through \f$\pi/2\f$.
+ */
+template <typename T1, KFR_ENABLE_IF(is_numeric<T1>)>
+KFR_INTRINSIC flt_type<T1> asin(const T1& x)
+{
+    return intrinsics::asin(x);
+}
+/**
+ * @brief Returns the arc cosine of x. The returned angle is in the range 0 through \f$\pi\f$.
+ */
+template <typename T1, KFR_ENABLE_IF(is_numeric<T1>)>
+KFR_INTRINSIC flt_type<T1> acos(const T1& x)
+{
+    return intrinsics::acos(x);
+}
+} // namespace CMT_ARCH_NAME
+
+} // namespace kfr

@@ -1,3 +1,6 @@
+/** @addtogroup basic_math
+ *  @{
+ */
 /*
   Copyright (C) 2016-2023 Dan Cazarin (https://www.kfrlib.com)
   This file is part of KFR
@@ -22,23 +25,27 @@
  */
 #pragma once
 
-#include "base.hpp"
+#include "impl/clamp.hpp"
 
-#include "dsp/biquad.hpp"
-#include "dsp/biquad_design.hpp"
-#include "dsp/dcremove.hpp"
-#include "dsp/delay.hpp"
-#include "dsp/ebu.hpp"
-#include "dsp/fir.hpp"
-#include "dsp/fir_design.hpp"
-#include "dsp/goertzel.hpp"
-#include "dsp/iir_design.hpp"
-#include "dsp/mixdown.hpp"
-#include "dsp/oscillators.hpp"
-#include "dsp/sample_rate_conversion.hpp"
-#include "dsp/speaker.hpp"
-#include "dsp/special.hpp"
-#include "dsp/units.hpp"
-#include "dsp/waveshaper.hpp"
-#include "dsp/weighting.hpp"
-#include "dsp/window.hpp"
+namespace kfr
+{
+inline namespace CMT_ARCH_NAME
+{
+
+/// @brief Returns the first argument clamped to a range [lo, hi]
+template <typename T1, typename T2, typename T3, KFR_ENABLE_IF(is_numeric_args<T1, T2, T3>),
+          typename Tout = std::common_type_t<T1, T2, T3>>
+KFR_INTRINSIC Tout clamp(const T1& x, const T2& lo, const T3& hi)
+{
+    return intrinsics::clamp(static_cast<Tout>(x), static_cast<Tout>(lo), static_cast<Tout>(hi));
+}
+
+/// @brief Returns the first argument clamped to a range [0, hi]
+template <typename T1, typename T2, KFR_ENABLE_IF(is_numeric_args<T1, T2>),
+          typename Tout = std::common_type_t<T1, T2>>
+KFR_INTRINSIC Tout clamp(const T1& x, const T2& hi)
+{
+    return intrinsics::clamp(static_cast<Tout>(x), static_cast<Tout>(hi));
+}
+} // namespace CMT_ARCH_NAME
+} // namespace kfr
